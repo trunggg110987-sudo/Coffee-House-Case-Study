@@ -1,4 +1,7 @@
 package com.coffeeshopmanagement.repository;
 
-public interface AccountRepository {
+import com.coffeeshopmanagement.entity.Account;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AccountRepository extends JpaRepository<Account,Long> {
 }
