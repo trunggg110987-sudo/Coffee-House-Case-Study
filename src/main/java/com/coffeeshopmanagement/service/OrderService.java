@@ -1,4 +1,4 @@
 package com.coffeeshopmanagement.service;
 
-public class OrderService {
+public interface OrderService {
 }

@@ -1,4 +1,4 @@
 package com.coffeeshopmanagement.service;
 
-public interface ProductService {
+public class CategoryServiceImpl {
 }

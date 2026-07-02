@@ -1,4 +1,4 @@
 package com.coffeeshopmanagement.service;
 
-public class RecipeService {
+public interface RecipeService {
 }
