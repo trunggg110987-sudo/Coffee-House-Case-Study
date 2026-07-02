@@ -1,4 +1,4 @@
-create database coffehouse;
+create database coffe_house;
 
-       use coffehouse;
+       use coffe_house;
 

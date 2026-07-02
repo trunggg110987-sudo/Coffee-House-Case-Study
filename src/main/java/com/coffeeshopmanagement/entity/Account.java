@@ -28,4 +28,8 @@ public class Account {
 
     @Column(nullable = false, length = 20)
     private String role;
+
+    public boolean isEnabled() {
+        return true;
+    }
 }
