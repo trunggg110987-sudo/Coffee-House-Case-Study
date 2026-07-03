@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${title}">Thêm bàn mới</title>
 </head>
 <body>
+<div th:fragment="content">
+    <div class="mb-4">
+        <a href="/tables" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+        <h2 class="fw-bold text-dark" th:text="${title}">Thêm Bàn Mới</h2>
+    </div>
 
+    <div class="row">
+        <div class="col-md-6 col-lg-5">
+            <div class="card p-4 shadow-sm">
+                <form th:action="@{/tables}" th:object="${table}" method="post">
+                    <input type="hidden" th:field="*{id}" />
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Tên bàn</label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control rounded-pill px-3" 
+                               placeholder="VD: Bàn số 1, Khu vực A" th:errorclass="is-invalid" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            Tên bàn không được trống
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label fw-semibold">Trạng thái ban đầu</label>
+                        <select id="status" th:field="*{status}" class="form-select rounded-pill px-3">
+                            <option th:each="st : ${statuses}" th:value="${st}" 
+                                    th:text="${st.name() == 'AVAILABLE' ? 'Trống (AVAILABLE)' : 'Đang phục vụ (OCCUPIED)'}">
+                                Trống
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-warning rounded-pill py-2 shadow-sm">
+                            <i class="bi bi-save me-1"></i> Lưu thông tin
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Quản lý Công thức</title>
 </head>
 <body>
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Quản lý Công thức</h2>
+            <p class="text-muted mb-0">Định nghĩa danh sách các nguyên liệu cần thiết cho mỗi loại đồ uống/bánh ngọt.</p>
+        </div>
+    </div>
 
+    <!-- Product Card List -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Loop Products -->
+        <div class="col" th:each="p : ${products}">
+            <div class="card card-hover h-100 p-3 shadow-sm border">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-secondary-subtle text-secondary px-3 py-1 rounded-pill" th:text="${p.category.name}">Cà phê</span>
+                            <span class="fw-bold text-success" th:text="${#numbers.formatDecimal(p.price, 0, 'POINT', 0, 'COMMA') + 'đ'}">25.000đ</span>
+                        </div>
+                        <h4 class="card-title fw-bold text-dark mb-2" th:text="${p.name}">Cà phê đen</h4>
+                        
+                        <!-- Recipe Summary -->
+                        <div class="mt-3">
+                            <span class="text-muted fs-7 d-block mb-2">Thành phần pha chế:</span>
+                            <div class="lh-sm">
+                                <span class="badge bg-light text-dark border me-1 mb-1" th:each="r : ${p.recipes}">
+                                    <span th:text="${r.ingredient.name}">Cà phê</span>: 
+                                    <span class="fw-bold text-warning" th:text="${r.quantity + ' ' + r.ingredient.unit}">20g</span>
+                                </span>
+                                <span class="text-muted fs-7 italic" th:if="${#lists.isEmpty(p.recipes)}">Chưa có công thức.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <a th:href="@{/recipes/product/{productId}(productId=${p.id})}" class="btn btn-warning rounded-pill py-2 shadow-sm">
+                            <i class="bi bi-gear-fill me-1"></i> Thiết lập Công thức
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center text-muted py-5" th:if="${#lists.isEmpty(products)}">
+            Chưa có món ăn hay đồ uống nào trong danh sách. Vui lòng tạo món ăn trước!
+        </div>
+    </div>
+</div>
 </body>
 </html>
