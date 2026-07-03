@@ -5,6 +5,7 @@ import com.coffeeshopmanagement.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/products")
@@ -32,10 +33,20 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Product product) {
-        productService.save(product);
-        return "redirect:/products";
-    }
+    public String save(@ModelAttribute Product product,
+                   RedirectAttributes redirectAttributes) {
+
+    productService.save(product);
+
+    redirectAttributes.addFlashAttribute(
+            "successMessage",
+            product.getId() == null ?
+                    "Product created successfully." :
+                    "Product updated successfully."
+    );
+
+    return "redirect:/products";
+}
 
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
@@ -45,8 +56,16 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        productService.deleteById(id);
-        return "redirect:/products";
-    }
+    public String delete(@PathVariable Long id,
+                     RedirectAttributes redirectAttributes) {
+
+    productService.deleteById(id);
+
+    redirectAttributes.addFlashAttribute(
+            "successMessage",
+            "Product deleted successfully."
+    );
+
+    return "redirect:/products";
+}
 }

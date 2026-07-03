@@ -4,6 +4,7 @@ import com.coffeeshopmanagement.service.CategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/categories")
@@ -27,11 +28,21 @@ public class CategoryController {
         return "category/form";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute Category category) {
-        categoryService.save(category);
-        return "redirect:/categories";
-    }
+   @PostMapping("/save")
+    public String save(@ModelAttribute Category category,
+                   RedirectAttributes redirectAttributes) {
+
+    categoryService.save(category);
+
+    redirectAttributes.addFlashAttribute(
+            "successMessage",
+            category.getId() == null ?
+                    "Category created successfully." :
+                    "Category updated successfully."
+    );
+
+    return "redirect:/categories";
+}
 
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
@@ -40,8 +51,16 @@ public class CategoryController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        categoryService.deleteById(id);
-        return "redirect:/categories";
-    }
+    public String delete(@PathVariable Long id,
+                      RedirectAttributes redirectAttributes) {
+
+    categoryService.deleteById(id);
+
+    redirectAttributes.addFlashAttribute(
+            "successMessage",
+            "Category deleted successfully."
+    );
+
+    return "redirect:/categories";
+}
 }
