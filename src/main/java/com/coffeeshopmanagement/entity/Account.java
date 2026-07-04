@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.management.relation.Role;
 
 @Entity
-@Table(name = "account")
+@Table(name = "customers")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,10 +27,6 @@ public class Account {
 
     private String fullName;
 
-    @Column(nullable = false, length = 20)
-    private String role;
-
-    public boolean isEnabled() {
-        return true;
-    }
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${title}">Thêm nguyên liệu</title>
 </head>
 <body>
+<div th:fragment="content">
+    <div class="mb-4">
+        <a href="/ingredients" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+        <h2 class="fw-bold text-dark" th:text="${title}">Thêm Nguyên Liệu Mới</h2>
+    </div>
 
+    <div class="row">
+        <div class="col-md-8 col-lg-6">
+            <div class="card p-4 shadow-sm">
+                <form th:action="@{/ingredients}" th:object="${ingredient}" method="post">
+                    <input type="hidden" th:field="*{id}" />
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Tên nguyên liệu</label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control rounded-pill px-3" 
+                               placeholder="VD: Hạt cà phê Robusta, Sữa tươi tiệt trùng" th:errorclass="is-invalid" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            Tên nguyên liệu không được để trống
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="unit" class="form-label fw-semibold">Đơn vị tính</label>
+                            <input type="text" id="unit" th:field="*{unit}" class="form-control rounded-pill px-3" 
+                                   placeholder="VD: g, ml, túi, hộp" th:errorclass="is-invalid" />
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}">
+                                Đơn vị tính không được trống
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="stockQuantity" class="form-label fw-semibold">Số lượng tồn kho ban đầu</label>
+                            <input type="number" step="any" id="stockQuantity" th:field="*{stockQuantity}" class="form-control rounded-pill px-3" 
+                                   placeholder="VD: 500.0" th:errorclass="is-invalid" />
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}">
+                                Số lượng tồn kho phải là số lớn hơn hoặc bằng 0
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="minStockQuantity" class="form-label fw-semibold">Ngưỡng cảnh báo tồn tối thiểu</label>
+                        <input type="number" step="any" id="minStockQuantity" th:field="*{minStockQuantity}" class="form-control rounded-pill px-3" 
+                               placeholder="VD: 100.0 (Hệ thống sẽ báo đỏ nếu tồn kho dưới mức này)" th:errorclass="is-invalid" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('minStockQuantity')}" th:errors="*{minStockQuantity}">
+                            Ngưỡng tối thiểu phải lớn hơn hoặc bằng 0
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-warning rounded-pill py-2 shadow-sm">
+                            <i class="bi bi-save me-1"></i> Lưu nguyên liệu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

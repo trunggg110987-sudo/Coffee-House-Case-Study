@@ -1,10 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${title}">Định nghĩa công thức</title>
 </head>
 <body>
+<div th:fragment="content">
+    <div class="mb-4">
+        <a href="/recipes" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại công thức
+        </a>
+        <h2 class="fw-bold text-dark">Chi tiết công thức pha chế</h2>
+        <h5 class="text-muted">
+            Sản phẩm: <strong class="text-warning" th:text="${product.name}">Cà phê đen</strong> 
+            - Danh mục: <span th:text="${product.category.name}">Đồ uống</span>
+        </h5>
+    </div>
 
+    <div class="row g-4">
+        <!-- List of current recipe ingredients -->
+        <div class="col-lg-7">
+            <div class="card p-4 shadow-sm border">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">
+                    <i class="bi bi-list-stars text-warning me-1"></i> Các nguyên liệu cần có
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nguyên liệu</th>
+                                <th>Định lượng</th>
+                                <th>Đơn vị</th>
+                                <th style="width: 150px;" class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="r : ${recipes}">
+                                <td>
+                                    <span class="fw-semibold text-dark" th:text="${r.ingredient.name}">Hạt cà phê</span>
+                                </td>
+                                <td>
+                                    <!-- Editable field via inline form -->
+                                    <form th:action="@{/recipes/product/{productId}/add(productId=${product.id})}" method="post" class="d-flex align-items-center gap-1">
+                                        <input type="hidden" name="ingredientId" th:value="${r.ingredient.id}" />
+                                        <input type="number" step="any" name="quantity" th:value="${r.quantity}" 
+                                               class="form-control form-control-sm rounded-pill text-center fw-bold" style="width: 80px;" required />
+                                        <button type="submit" class="btn btn-sm btn-outline-success rounded-circle p-1" title="Cập nhật">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td th:text="${r.ingredient.unit}">g</td>
+                                <td class="text-center">
+                                    <a th:href="@{/recipes/delete/{id}(id=${r.id}, productId=${product.id})}" 
+                                       class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                       onclick="return confirm('Bạn có muốn gỡ bỏ nguyên liệu này khỏi công thức?')">
+                                        <i class="bi bi-trash-fill me-1"></i>Gỡ bỏ
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(recipes)}">
+                                <td colspan="4" class="text-center text-muted py-4">Công thức của sản phẩm này chưa có nguyên liệu nào.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add ingredient to recipe form -->
+        <div class="col-lg-5">
+            <div class="card p-4 shadow-sm border">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">
+                    <i class="bi bi-plus-circle-fill text-warning me-1"></i> Thêm nguyên liệu vào công thức
+                </h5>
+                <form th:action="@{/recipes/product/{productId}/add(productId=${product.id})}" method="post">
+                    
+                    <div class="mb-3">
+                        <label for="ingredientId" class="form-label fw-semibold">Chọn nguyên liệu</label>
+                        <select id="ingredientId" name="ingredientId" class="form-select rounded-pill px-3" required>
+                            <option value="" disabled selected>-- Chọn nguyên liệu --</option>
+                            <option th:each="i : ${ingredients}" th:value="${i.id}" 
+                                    th:text="${i.name + ' (' + i.unit + ')'}">
+                                Hạt cà phê (g)
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label fw-semibold">Định lượng (số lượng cần dùng)</label>
+                        <input type="number" step="any" min="0.001" id="quantity" name="quantity" 
+                               class="form-control rounded-pill px-3" placeholder="Nhập định lượng, VD: 20.0" required />
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-warning rounded-pill py-2 shadow-sm">
+                            <i class="bi bi-plus-lg me-1"></i> Thêm / Cập nhật
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
