@@ -3,6 +3,7 @@ package com.coffeeshopmanagement.service;
 import com.coffeeshopmanagement.entity.DiningTable;
 import com.coffeeshopmanagement.entity.TableStatus;
 import com.coffeeshopmanagement.repository.DiningTableRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,8 @@ public class DiningTableServiceImpl implements DiningTableService {
 
     @Override
     @Transactional
-    public DiningTable saveTable(DiningTable table) {
-        return tableRepository.save(table);
+    public void saveTable(DiningTable table) {
+        tableRepository.save(table);
     }
 
     @Override
@@ -47,6 +48,16 @@ public class DiningTableServiceImpl implements DiningTableService {
         } else {
             table.setStatus(TableStatus.AVAILABLE);
         }
+        tableRepository.save(table);
+    }
+
+    @Override
+    @Transactional
+    public void updateTableStatus(Long id, String status) {
+        DiningTable table = tableRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Bàn không tồn tại"));
+
+        table.setStatus(TableStatus.valueOf(status));
         tableRepository.save(table);
     }
 }

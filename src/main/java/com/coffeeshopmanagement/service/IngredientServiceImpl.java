@@ -2,6 +2,7 @@ package com.coffeeshopmanagement.service;
 
 import com.coffeeshopmanagement.entity.Ingredient;
 import com.coffeeshopmanagement.repository.IngredientRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +28,8 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public Ingredient saveIngredient(Ingredient ingredient) {
-        return ingredientRepository.save(ingredient);
+    public void saveIngredient(Ingredient ingredient) {
+        ingredientRepository.save(ingredient);
     }
 
     @Override
@@ -40,5 +41,19 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public List<Ingredient> getLowStockIngredients() {
         return ingredientRepository.findLowStockIngredients();
+    }
+
+    @Override
+    @Transactional
+    public void deductStock(Long ingredientId, Double quantityToDeduct) {
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new EntityNotFoundException("Nguyên liệu không tồn tại"));
+
+        if (ingredient.getQuantity() < quantityToDeduct) {
+            throw new IllegalStateException("Nguyên liệu \"" + ingredient.getName() + "\" không đủ");
+        }
+
+        ingredient.setQuantity(ingredient.getQuantity() - quantityToDeduct);
+        ingredientRepository.save(ingredient);
     }
 }

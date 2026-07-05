@@ -32,11 +32,6 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return account.isEnabled();
-    }
-
-    @Override
     public boolean isAccountNonExpired() {
         return true;
     }

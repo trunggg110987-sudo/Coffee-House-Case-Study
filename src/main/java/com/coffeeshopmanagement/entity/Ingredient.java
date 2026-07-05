@@ -29,7 +29,7 @@ public class Ingredient {
     @NotNull(message = "Số lượng tồn kho không được để trống")
     @Min(value = 0, message = "Số lượng tồn kho không được nhỏ hơn 0")
     @Column(nullable = false)
-    private Double stockQuantity;
+    private Double quantity;
 
     @NotNull(message = "Ngưỡng cảnh báo không được để trống")
     @Min(value = 0, message = "Ngưỡng cảnh báo không được nhỏ hơn 0")
