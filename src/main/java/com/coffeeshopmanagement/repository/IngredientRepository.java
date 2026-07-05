@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     
-    @Query("SELECT i FROM Ingredient i WHERE i.stockQuantity <= i.minStockQuantity")
+    @Query("SELECT i FROM Ingredient i WHERE i.quantity <= i.minStockQuantity")
     List<Ingredient> findLowStockIngredients();
 }

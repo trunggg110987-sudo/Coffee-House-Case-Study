@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void updateItemQuantity(Long orderDetailId, Integer newQuantity) {
+    public Long updateItemQuantity(Long orderDetailId, Integer newQuantity) {
         OrderDetail detail = orderDetailRepository.findById(orderDetailId)
                 .orElseThrow(() ->  new EntityNotFoundException("OrderDetail not found"));
 
@@ -101,18 +101,21 @@ public class OrderServiceImpl implements OrderService {
         Order order = detail.getOrder();
         order.setTotalAmount(calculateOrderTotal(order.getId()));
         orderRepository.save(order);
+        return order.getId();
     }
 
     @Override
     @Transactional
-    public void removeItemFromOrder(Long orderDetailId) {
+    public Long removeItemFromOrder(Long orderDetailId) {
         OrderDetail detail = orderDetailRepository.findById(orderDetailId)
                 .orElseThrow(() ->  new EntityNotFoundException("OrderDetail not found"));
 
         Order order = detail.getOrder();
+        Long orderId = order.getId();
         orderDetailRepository.delete(detail);
-        order.setTotalAmount(calculateOrderTotal(order.getId()));
+        order.setTotalAmount(calculateOrderTotal(orderId));
         orderRepository.save(order);
+        return orderId;
     }
 
     @Override

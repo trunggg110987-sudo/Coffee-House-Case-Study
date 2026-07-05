@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 public interface OrderService {
     Order createOrder(Long tableId, Long accountId);
     void addItemToOrder(Long orderId, Long productId, Integer quantity);
-    void updateItemQuantity(Long orderDetailId, Integer newQuantity);
-    void removeItemFromOrder(Long orderDetailId);
+    Long updateItemQuantity(Long orderDetailId, Integer newQuantity);
+    Long removeItemFromOrder(Long orderDetailId);
     Order getOrderById(Long orderId);
     List<Order> getOpenOrders();
     Order getOpenOrderByTable(Long tableId);

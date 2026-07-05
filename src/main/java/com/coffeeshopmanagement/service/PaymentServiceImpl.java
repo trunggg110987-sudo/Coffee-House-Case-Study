@@ -3,6 +3,7 @@ package com.coffeeshopmanagement.service;
 import com.coffeeshopmanagement.entity.Order;
 import com.coffeeshopmanagement.entity.OrderDetail;
 import com.coffeeshopmanagement.entity.Recipe;
+import com.coffeeshopmanagement.entity.TableStatus;
 import com.coffeeshopmanagement.repository.OrderDetailRepository;
 import com.coffeeshopmanagement.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,7 +36,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void processPayment(Long orderId) {
-        // Bước 1: Lấy Order, check status OPEN
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Đơn hàng không tồn tại"));
 
@@ -45,7 +45,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         List<OrderDetail> orderDetails = orderDetailRepository.findByOrderId(orderId);
 
-        // Bước 2: Validation kho — check đủ nguyên liệu không
         for (OrderDetail detail : orderDetails) {
             List<Recipe> recipes = recipeService.getRecipesByProductId(detail.getProduct().getId());
 
@@ -60,7 +59,6 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
 
-        // Bước 3: Trừ kho (sau khi validation pass)
         for (OrderDetail detail : orderDetails) {
             List<Recipe> recipes = recipeService.getRecipesByProductId(detail.getProduct().getId());
 
@@ -70,6 +68,6 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
         orderService.updateOrderStatus(orderId, "PAID");
-        diningTableService.updateTableStatus(order.getDiningTable().getId(), "TRONG");
+        diningTableService.updateTableStatus(order.getDiningTable().getId(), TableStatus.AVAILABLE.name());
     }
 }
