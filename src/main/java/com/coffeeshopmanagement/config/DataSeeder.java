@@ -1,9 +1,8 @@
 package com.coffeeshopmanagement.config;
 
-
 import com.coffeeshopmanagement.entity.Account;
+import com.coffeeshopmanagement.entity.Role;
 import com.coffeeshopmanagement.repository.AccountRepository;
-import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -20,21 +19,22 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     @Override
-    public void run(String @NonNull ... args){
-        if(accountRepository.findByUsername("admin").isEmpty()){
-            Account admin  = new Account();
-            admin .setUsername("admin");
+    public void run(String... args) {
+        if (accountRepository.findByUsername("admin").isEmpty()) {
+            Account admin = new Account();
+            admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("123456"));
-            admin.setFullName("Quản lý");
-            admin.setRole("ADMIN");
+            admin.setFullName("Quan ly");
+            admin.setRole(Role.ADMIN);
             accountRepository.save(admin);
         }
+
         if (accountRepository.findByUsername("staff").isEmpty()) {
             Account staff = new Account();
             staff.setUsername("staff");
             staff.setPassword(passwordEncoder.encode("123456"));
-            staff.setFullName("Nhân viên");
-            staff.setRole("STAFF");
+            staff.setFullName("Nhan vien");
+            staff.setRole(Role.STAFF);
             accountRepository.save(staff);
         }
     }
