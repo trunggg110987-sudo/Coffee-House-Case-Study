@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Transactional
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -29,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order createOrder(Long tableId, Long accountId) {
         DiningTable diningTable = diningTableRepository.findById(tableId).orElse(null);
 
@@ -54,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void addItemToOrder(Long orderId, Long productId, Integer quantity) {
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order == null) {
@@ -85,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void updateItemQuantity(Long orderDetailId, Integer newQuantity) {
         OrderDetail detail = orderDetailRepository.findById(orderDetailId)
                 .orElseThrow(() ->  new EntityNotFoundException("OrderDetail not found"));
@@ -101,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void removeItemFromOrder(Long orderDetailId) {
         OrderDetail detail = orderDetailRepository.findById(orderDetailId)
                 .orElseThrow(() ->  new EntityNotFoundException("OrderDetail not found"));
@@ -123,6 +127,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order getOpenOrderByTable(Long tableId) {
         diningTableRepository.findById(tableId)
                 .orElseThrow(() -> new EntityNotFoundException("DiningTable not found"));
@@ -152,5 +157,15 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return total;
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Đơn hàng không tồn tại"));
+
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 }

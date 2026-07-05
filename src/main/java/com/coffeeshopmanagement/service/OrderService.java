@@ -13,4 +13,5 @@ public interface OrderService {
     List<Order> getOpenOrders();
     Order getOpenOrderByTable(Long tableId);
     BigDecimal calculateOrderTotal(Long orderId);
+    void updateOrderStatus(Long orderId, String paid);
 }
