@@ -1,49 +1,59 @@
-<div class="bg-dark text-white p-3 d-flex flex-column h-100 shadow" style="min-width: 250px; min-height: 100vh;" th:fragment="sidebar">
+<div class="bg-dark text-white p-3 d-flex flex-column h-100 shadow"
+     style="min-width: 250px; min-height: 100vh;"
+     th:fragment="sidebar"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <div class="text-center py-4 border-bottom border-secondary mb-3">
-        <div class="d-inline-flex align-items-center justify-content-center bg-warning text-dark rounded-circle mb-2" style="width: 50px; height: 50px;">
+        <div class="d-inline-flex align-items-center justify-content-center bg-warning text-dark rounded-circle mb-2"
+             style="width: 50px; height: 50px;">
             <i class="bi bi-cup-hot fs-3"></i>
         </div>
-        <h5 class="m-0 fw-bold tracking-wide">COFFEE HOUSE</h5>
-        <small class="text-muted text-uppercase tracking-wider">Management</small>
+        <h5 class="m-0 fw-bold">COFFEE HOUSE</h5>
+        <small class="text-muted text-uppercase">Management</small>
     </div>
+
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item mb-2">
-            <a href="/dashboard" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'dashboard' ? 'active bg-warning text-dark fw-bold' : ''}">
+            <a href="/dashboard" class="nav-link text-white rounded px-3 py-2">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="/tables" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'tables' ? 'active bg-warning text-dark fw-bold' : ''}">
-                <i class="bi bi-grid-3x3-gap"></i> Quản lý Bàn
+
+        <li class="nav-item mb-2" sec:authorize="hasRole('ADMIN')">
+            <a href="/tables" class="nav-link text-white rounded px-3 py-2">
+                <i class="bi bi-grid-3x3-gap"></i> Quản lý bàn
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="/ingredients" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'ingredients' ? 'active bg-warning text-dark fw-bold' : ''}">
+
+        <li class="nav-item mb-2" sec:authorize="hasRole('ADMIN')">
+            <a href="/ingredients" class="nav-link text-white rounded px-3 py-2">
                 <i class="bi bi-box-seam"></i> Nguyên liệu
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="/recipes" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'recipes' ? 'active bg-warning text-dark fw-bold' : ''}">
+
+        <li class="nav-item mb-2" sec:authorize="hasRole('ADMIN')">
+            <a href="/recipes" class="nav-link text-white rounded px-3 py-2">
                 <i class="bi bi-receipt"></i> Công thức món
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="/products" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'products' ? 'active bg-warning text-dark fw-bold' : ''}">
-                <i class="bi bi-cup-straw"></i> Món ăn & Đồ uống
+
+        <li class="nav-item mb-2" sec:authorize="hasRole('ADMIN')">
+            <a href="/products" class="nav-link text-white rounded px-3 py-2">
+                <i class="bi bi-cup-straw"></i> Món ăn & đồ uống
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="/categories" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'categories' ? 'active bg-warning text-dark fw-bold' : ''}">
+
+        <li class="nav-item mb-2" sec:authorize="hasRole('ADMIN')">
+            <a href="/categories" class="nav-link text-white rounded px-3 py-2">
                 <i class="bi bi-tags"></i> Danh mục
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="/orders" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center gap-2" th:classappend="${activePage == 'orders' ? 'active bg-warning text-dark fw-bold' : ''}">
+
+        <li class="nav-item mb-2" sec:authorize="hasAnyRole('ADMIN','STAFF')">
+            <a href="/orders/list" class="nav-link text-white rounded px-3 py-2">
                 <i class="bi bi-cart"></i> Đơn hàng
             </a>
         </li>
     </ul>
-    <div class="border-top border-secondary pt-3 text-center mt-3">
-        <small class="text-muted">&copy; 2026 Coffee House Group</small>
-    </div>
 </div>
