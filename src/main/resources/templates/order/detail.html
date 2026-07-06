@@ -40,7 +40,7 @@
         <div class="card-body">
 
             <form action="/orders/add-item" method="post" class="row g-2">
-
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="hidden" name="orderId" th:value="${order.id}"/>
 
                 <div class="col-md-6">
