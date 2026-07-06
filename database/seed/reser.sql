@@ -1,0 +1,13 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE payments;
+TRUNCATE TABLE order_detail;
+TRUNCATE TABLE orders;
+TRUNCATE TABLE recipes;
+TRUNCATE TABLE products;
+TRUNCATE TABLE categories;
+TRUNCATE TABLE dining_tables;
+TRUNCATE TABLE ingredients;
+TRUNCATE TABLE customers;
+
+SET FOREIGN_KEY_CHECKS = 1;
