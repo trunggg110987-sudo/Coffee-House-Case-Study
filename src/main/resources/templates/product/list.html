@@ -1,53 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 
-<section>
+<div th:fragment="content">
 
-    <div class="d-flex justify-content-between mb-3">
-        <h3>Product List</h3>
-        <a class="btn btn-primary" href="/products/create">
-            + Add Product
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+
+        <div>
+            <h3 class="mb-1 fw-bold">Quản lý Sản phẩm</h3>
+            <p class="text-muted mb-0">
+                Xem, chỉnh sửa và quản lý thông tin sản phẩm.
+            </p>
+        </div>
+
+        <a href="/products/create"
+           class="btn btn-warning text-white px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2">
+            <span style="font-size: 18px;">+</span>
+            Thêm Sản phẩm
         </a>
+
     </div>
 
-    <table class="table table-bordered table-hover">
+    <!-- TABLE -->
+    <table class="table table-bordered table-hover align-middle">
+
         <thead class="table-dark">
         <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th width="200">Action</th>
+            <th>Ảnh</th>
+            <th>Tên Sản phẩm</th>
+            <th>Giá</th>
+            <th>Danh mục</th>
+            <th>Trạng thái</th>
+            <th width="200">Thao tác</th>
         </tr>
         </thead>
 
         <tbody>
+
         <tr th:each="p : ${products}">
+
+            <!-- ID -->
             <td th:text="${p.id}"></td>
+
+            <!-- IMAGE -->
+            <td>
+                <img th:if="${p.image != null}"
+                     th:src="@{'/uploads/products/' + ${p.image}}"
+                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+
+                <span th:if="${p.image == null}">Không có ảnh </span>
+            </td>
+
+            <!-- NAME -->
             <td th:text="${p.name}"></td>
-            <td th:text="${p.price}"></td>
 
-            <!-- nếu Product có category -->
-            <td th:text="${p.category.name}"></td>
+            <!-- PRICE -->
+            <td th:text="${#numbers.formatDecimal(p.price,0,'COMMA',0,'POINT')} + ' đ'"></td>
 
+            <!-- CATEGORY SAFE -->
+            <td th:text="${p.category != null ? p.category.name : '---'}"></td>
+
+            <!-- AVAILABLE -->
+            <td>
+                <span class="badge"
+                      th:classappend="${p.available} ? 'bg-success' : 'bg-danger'"
+                      th:text="${p.available} ? 'Còn bán' : 'Hết hàng'">
+                </span>
+            </td>
+
+            <!-- ACTION -->
             <td>
                 <a class="btn btn-warning btn-sm"
                    th:href="@{'/products/edit/' + ${p.id}}">
-                    Edit
+                    Sửa
                 </a>
 
                 <a class="btn btn-danger btn-sm"
-                   href="javascript:void(0);"
-                   th:onclick="'confirmDelete(' + ${p.id} + ', \'products\')'">
-                    Delete
+                   th:href="@{'/products/delete/' + ${p.id}}">
+                    Xoá
                 </a>
             </td>
-        </tr>
-        </tbody>
 
+        </tr>
+
+        <!-- EMPTY -->
+        <tr th:if="${#lists.isEmpty(products)}">
+            <td colspan="7" class="text-center text-muted">
+                Chưa có sản phẩm nào được tạo.
+            </td>
+        </tr>
+
+        </tbody>
     </table>
 
-</section>
+</div>
 
 </html>

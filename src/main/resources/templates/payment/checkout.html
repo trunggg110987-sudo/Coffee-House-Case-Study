@@ -1,10 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 
-</body>
+<div th:fragment="content">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+
+        <div>
+            <h3 class="mb-1 fw-bold">Thanh toán hóa đơn</h3>
+            <p class="text-muted mb-0">
+                Xác nhận thanh toán và hoàn tất đơn hàng
+            </p>
+        </div>
+
+        <div></div>
+
+    </div>
+
+    <div class="row">
+
+        <!-- LEFT: ORDER INFO -->
+        <div class="col-md-7">
+
+            <!-- ERROR -->
+            <div th:if="${errorMessage != null}"
+                 class="alert alert-danger">
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <!-- ORDER CARD -->
+            <div class="card shadow-sm mb-3">
+
+                <div class="card-header">
+                    <strong>Thông tin đơn hàng</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <p><b>Mã đơn:</b> <span th:text="${order.id}"></span></p>
+
+                    <p>
+                        <b>Bàn:</b>
+                        <span th:text="${order.diningTable != null ? order.diningTable.name : '---'}"></span>
+                    </p>
+
+                    <p>
+                        <b>Nhân viên:</b>
+                        <span th:text="${order.account != null ? order.account.fullName : '---'}"></span>
+                    </p>
+
+                    <p>
+                        <b>Trạng thái:</b>
+                        <span class="badge bg-warning text-dark"
+                              th:text="${order.status != null ? order.status : '---'}"></span>
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- ITEMS -->
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <strong>Chi tiết món</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-sm align-middle">
+
+                        <thead>
+                        <tr>
+                            <th>Món</th>
+                            <th class="text-center">SL</th>
+                            <th class="text-end">Giá</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="item : ${order.orderDetails}">
+
+                            <td th:text="${item.product != null ? item.product.name : '---'}"></td>
+
+                            <td class="text-center"
+                                th:text="${item.quantity}"></td>
+
+                            <td class="text-end"
+                                th:text="${item.priceAtOrder != null ? item.priceAtOrder : 0}"></td>
+
+                            <td class="text-end"
+                                th:text="${item.priceAtOrder != null ? item.priceAtOrder * item.quantity : 0}">
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT: PAYMENT -->
+        <div class="col-md-5">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <strong>Thanh toán</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- TOTAL -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fw-bold">Tổng tiền:</span>
+                        <span class="text-danger fw-bold"
+                              th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT') + ' đ' : '0 đ'}">
+                        </span>
+                    </div>
+
+                    <!-- FORM -->
+                    <form th:action="@{/payments/process}" method="post">
+
+                        <input type="hidden" name="orderId" th:value="${order.id}" />
+
+                        <!-- METHOD -->
+                        <div class="mb-3">
+                            <label class="form-label">Phương thức thanh toán</label>
+                            <select class="form-select" name="method">
+                                <option value="CASH">Tiền mặt</option>
+                                <option value="BANK">Chuyển khoản</option>
+                                <option value="QR">QR Code</option>
+                            </select>
+                        </div>
+
+                        <!-- NOTE -->
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea class="form-control" name="note" rows="3"
+                                      placeholder="Nhập ghi chú..."></textarea>
+                        </div>
+
+                        <!-- BUTTON -->
+                        <div class="d-grid gap-2">
+
+                            <button type="submit" class="btn btn-success btn-lg">
+                                Xác nhận thanh toán
+                            </button>
+
+                            <a th:href="@{/orders/{id}(id=${order.id})}"
+                               class="btn btn-outline-secondary">
+                                Quay lại đơn hàng
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </html>

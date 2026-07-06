@@ -1,10 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 
-</body>
+<div th:fragment="content">
+
+    <!-- HEADER (đồng bộ category / product / ingredient) -->
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+
+        <div>
+            <h3 class="mb-1 fw-bold">Quản lý Order</h3>
+            <p class="text-muted mb-0">
+                Xem danh sách order đang phục vụ trong quán
+            </p>
+        </div>
+
+        <div></div>
+
+    </div>
+
+    <!-- CARD -->
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <strong>Danh sách Order đang mở</strong>
+        </div>
+
+        <div class="card-body">
+
+            <!-- EMPTY STATE SAFE -->
+            <div th:if="${orders == null or #lists.isEmpty(orders)}"
+                 class="alert alert-info text-center mb-0">
+
+                Hiện chưa có order nào đang phục vụ.
+
+            </div>
+
+            <!-- TABLE SAFE -->
+            <div class="table-responsive"
+                 th:if="${orders != null and !#lists.isEmpty(orders)}">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Bàn</th>
+                        <th>Nhân viên</th>
+                        <th>Thời gian tạo</th>
+                        <th class="text-end">Tổng tiền</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="order : ${orders}">
+
+                        <!-- ID -->
+                        <td th:text="${order.id}"></td>
+
+                        <!-- SAFE: DINING TABLE -->
+                        <td th:text="${order.diningTable != null ? order.diningTable.name : '---'}"></td>
+
+                        <!-- SAFE: ACCOUNT -->
+                        <td th:text="${order.account != null ? order.account.fullName : '---'}"></td>
+
+                        <!-- SAFE: CREATED TIME -->
+                        <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt,'dd/MM/yyyy HH:mm') : '---'}"></td>
+
+                        <!-- SAFE: TOTAL -->
+                        <td class="text-end"
+                            th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT') + ' đ' : '0 đ'}">
+                        </td>
+
+                        <!-- SAFE: STATUS -->
+                        <td class="text-center">
+
+                            <span class="badge bg-success"
+                                  th:text="${order.status != null ? order.status : '---'}">
+                            </span>
+
+                        </td>
+
+                        <!-- ACTION -->
+                        <td class="text-center">
+
+                            <a th:href="@{/orders/{id}(id=${order.id})}"
+                               class="btn btn-sm btn-primary">
+                                Chi tiết
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </html>

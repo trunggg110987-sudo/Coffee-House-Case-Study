@@ -1,64 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 
-<section>
+<div th:fragment="content">
 
     <div class="mb-3">
-        <h3 th:text="${product.id == null ? 'Create Product' : 'Edit Product'}"></h3>
+        <h3 th:text="${product.id == null ? 'Tạo Sản phẩm' : 'Chỉnh sửa Sản phẩm'}"></h3>
+        <p class="text-muted">Nhập thông tin sản phẩm</p>
     </div>
 
-    <form th:action="@{/products/save}" th:object="${product}" method="post">
+    <form th:action="@{/products/save}"
+          th:object="${product}"
+          method="post"
+          enctype="multipart/form-data">
 
-        <!-- ID (hidden khi edit) -->
         <input type="hidden" th:field="*{id}"/>
 
-        <!-- Name -->
+        <!-- NAME -->
         <div class="mb-3">
-            <label class="form-label">Product Name</label>
-            <input type="text"
-                   class="form-control"
-                   th:field="*{name}"
-                   placeholder="Enter product name" />
+            <label class="form-label">Tên sản phẩm</label>
+            <input type="text" class="form-control" th:field="*{name}">
         </div>
 
-        <!-- Price -->
+        <!-- PRICE -->
         <div class="mb-3">
-            <label class="form-label">Price</label>
-            <input type="number"
-                   class="form-control"
-                   th:field="*{price}"
-                   placeholder="Enter price" />
+            <label class="form-label">Giá</label>
+            <input type="number" class="form-control" th:field="*{price}">
         </div>
 
-        <!-- Category -->
+        <!-- IMAGE -->
         <div class="mb-3">
-            <label class="form-label">Category</label>
+            <label class="form-label">Ảnh sản phẩm</label>
+            <!--  ảnh cũ -->
+            <div th:if="${product.image != null}">
+                <img th:src="@{'/uploads/products/' + ${product.image}}"
+                     style="width:100px;height:100px;object-fit:cover;margin-bottom:10px;">
+            </div>
+            <!-- chọn ảnh mới -->
+            <input type="file"
+                   name="imageFile"
+                   class="form-control">
+        </div>
 
-            <select class="form-select" th:field="*{category}">
-                <option value="">-- Select Category --</option>
+        <!-- CATEGORY FIX -->
+        <div class="mb-3">
+            <label class="form-label">Danh mục</label>
+
+            <select class="form-select" th:field="*{category.id}">
+                <option value="">-- Chọn danh mục --</option>
 
                 <option th:each="c : ${categories}"
                         th:value="${c.id}"
                         th:text="${c.name}">
                 </option>
-
             </select>
         </div>
 
-        <!-- Buttons -->
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">
-                Save
-            </button>
-
-            <a href="/products" class="btn btn-secondary">
-                Cancel
-            </a>
+        <!-- AVAILABLE -->
+        <div class="form-check mb-3">
+            <input type="checkbox"
+                   class="form-check-input"
+                   th:field="*{available}">
+            <label class="form-check-label">
+                Còn bán
+            </label>
         </div>
+
+        <button type="submit" class="btn btn-primary">
+            Lưu
+        </button>
+
+        <a href="/products" class="btn btn-secondary">
+            Huỷ
+        </a>
 
     </form>
 
-</section>
+</div>
 
 </html>

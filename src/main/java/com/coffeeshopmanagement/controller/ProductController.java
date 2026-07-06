@@ -5,7 +5,11 @@ import com.coffeeshopmanagement.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/products")
@@ -34,20 +38,37 @@ public class ProductController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Product product,
-                   RedirectAttributes redirectAttributes) {
+                       @RequestParam(value = "imageFile", required = false) MultipartFile file,
+                       RedirectAttributes redirectAttributes) {
 
-    productService.save(product);
+        try {
+            if (file != null && !file.isEmpty()) {
 
-    redirectAttributes.addFlashAttribute(
-            "successMessage",
-            product.getId() == null ?
-                    "Product created successfully." :
-                    "Product updated successfully."
-    );
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-    return "redirect:/products";
-}
+                String uploadPath = "src/main/resources/static/uploads/products/";
 
+                File dir = new File(uploadPath);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                file.transferTo(new File(uploadPath + fileName));
+
+                product.setImage(fileName);
+            }
+
+            productService.save(product);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Lưu sản phẩm thành công!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Upload ảnh lỗi!");
+        }
+
+        return "redirect:/products";
+    }
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findById(id));
@@ -68,4 +89,5 @@ public class ProductController {
 
     return "redirect:/products";
 }
+
 }

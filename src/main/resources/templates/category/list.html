@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::content})">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 
 <body>
 
 <div th:fragment="content">
 
-    <div class="d-flex justify-content-between mb-3">
-        <h3>Category List</h3>
-        <a class="btn btn-primary" href="/categories/create">
-            + Add Category
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+
+        <div>
+            <h3 class="mb-1 fw-bold">Quản lý Danh mục</h3>
+            <p class="text-muted mb-0">
+                Xem, chỉnh sửa và quản lý thông tin danh mục.
+            </p>
+        </div>
+
+        <a href="/categories/create"
+           class="btn btn-warning text-white px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2">
+
+            <span style="font-size: 18px;">+</span>
+            Thêm Danh mục
         </a>
+
     </div>
 
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th width="200">Action</th>
+            <th>Tên Danh mục</th>
+            <th width="200">Thao tác</th>
         </tr>
         </thead>
 
@@ -29,18 +40,24 @@
             <td>
                 <a class="btn btn-warning btn-sm"
                    th:href="@{'/categories/edit/' + ${c.id}}">
-                    Edit
+                    Sửa
                 </a>
 
                 <a class="btn btn-danger btn-sm"
                    href="javascript:void(0);"
                    th:onclick="'confirmDelete(' + ${c.id} + ', \'categories\')'">
-                    Delete
+                    Xoá
                 </a>
             </td>
         </tr>
-        </tbody>
 
+        <tr th:if="${#lists.isEmpty(categories)}">
+            <td colspan="3" class="text-center text-muted">
+                Chưa có danh mục nào được tạo.
+            </td>
+        </tr>
+
+        </tbody>
     </table>
 
 </div>

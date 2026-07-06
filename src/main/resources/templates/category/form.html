@@ -1,38 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 
-<section>
+<body>
+
+<div th:fragment="content">
 
     <div class="mb-3">
-        <h3 th:text="${category.id == null ? 'Create Category' : 'Edit Category'}"></h3>
+        <h3 th:text="${category.id == null ? 'Tạo Danh mục' : 'Chỉnh sửa Danh mục'}"></h3>
+        <p class="text-muted">
+            Nhập thông tin danh mục để tạo mới hoặc cập nhật dữ liệu.
+        </p>
     </div>
 
     <form th:action="@{/categories/save}" th:object="${category}" method="post">
 
-        <!-- hidden id (quan trọng để biết edit hay create) -->
         <input type="hidden" th:field="*{id}" />
 
         <div class="mb-3">
-            <label class="form-label">Category Name</label>
+            <label class="form-label">Tên Danh mục</label>
             <input type="text"
                    class="form-control"
                    th:field="*{name}"
-                   placeholder="Enter category name" />
+                   placeholder="Nhập tên danh mục" />
         </div>
 
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-success">
-                Save
+                Lưu
             </button>
 
             <a href="/categories" class="btn btn-secondary">
-                Cancel
+                Huỷ
             </a>
         </div>
 
     </form>
 
-</section>
+</div>
 
+</body>
 </html>

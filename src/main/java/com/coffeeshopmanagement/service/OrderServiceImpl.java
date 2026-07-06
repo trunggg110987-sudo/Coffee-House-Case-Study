@@ -118,11 +118,18 @@ public class OrderServiceImpl implements OrderService {
         return orderId;
     }
 
-    @Override
-    public Order getOrderById(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() ->  new EntityNotFoundException("Order not found"));
-    }
+//    @Override
+//    public Order getOrderById(Long orderId) {
+//        return orderRepository.findById(orderId)
+//                .orElseThrow(() ->  new EntityNotFoundException("Order not found"));
+//    }
+        @Override
+        public Order getOrderById(Long orderId) {
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+            order.getOrderDetails().isEmpty();
+            return order;
+        }
 
     @Override
     public List<Order> getOpenOrders() {

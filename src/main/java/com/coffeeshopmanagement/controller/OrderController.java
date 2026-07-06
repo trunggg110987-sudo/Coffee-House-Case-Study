@@ -23,6 +23,11 @@ public class OrderController {
         this.productService = productService;
     }
 
+    @GetMapping("")
+    public String index() {
+        return "redirect:/orders/list";
+    }
+
     @GetMapping("/create/{tableId}")
     public String createOrder(@PathVariable Long tableId, Model model, Authentication authentication) {
         Order order;
@@ -70,4 +75,5 @@ public class OrderController {
         model.addAttribute("products", productService.findAll());
         return "order/detail";
     }
+
 }

@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +23,7 @@ public class Product {
     @Column(nullable = false)
     private Double price;
 
+    @Column(length = 255)
     private String image;
 
     @ManyToOne
@@ -29,9 +31,8 @@ public class Product {
     private Category category;
 
     @Column(nullable = false)
-    @Builder.Default
     private Boolean available = true;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<Recipe> recipes;
 }
