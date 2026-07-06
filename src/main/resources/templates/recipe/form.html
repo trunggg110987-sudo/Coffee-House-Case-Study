@@ -43,7 +43,7 @@
                                     <!-- Editable field via inline form -->
                                     <form th:action="@{/recipes/product/{productId}/add(productId=${product.id})}" method="post" class="d-flex align-items-center gap-1">
                                         <input type="hidden" name="ingredientId" th:value="${r.ingredient.id}" />
-                                        <input type="number" step="any" name="quantity" th:value="${r.quantity}" 
+                                        <input type="number" step="any" name="quantity" th:value="${r.quantity % 1 == 0 ? #numbers.formatDecimal(r.quantity, 1, 0) : r.quantity}" 
                                                class="form-control form-control-sm rounded-pill text-center fw-bold" style="width: 80px;" required />
                                         <button type="submit" class="btn btn-sm btn-outline-success rounded-circle p-1" title="Cập nhật">
                                             <i class="bi bi-check-lg"></i>

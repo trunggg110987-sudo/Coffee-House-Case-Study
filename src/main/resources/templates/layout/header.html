@@ -1,20 +1,29 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm" th:fragment="header">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm"
+     th:fragment="header"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="/dashboard">
             <i class="bi bi-cup-hot-fill text-warning me-2"></i>Coffee House
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+
+        <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item">
-                    <span class="text-light me-3">Xin chào, <strong>Quản trị viên</strong></span>
+                    <span class="text-light me-3">
+                        Xin chào,
+                        <strong sec:authentication="name">user</strong>
+                    </span>
                 </li>
+
                 <li class="nav-item">
-                    <a class="btn btn-outline-light btn-sm rounded-pill px-3" href="/logout">
-                        <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
-                    </a>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                            <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>

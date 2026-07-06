@@ -24,7 +24,7 @@
                         <select id="ingredientId" name="ingredientId" class="form-select rounded-pill px-3" required>
                             <option value="" disabled selected>-- Chọn nguyên liệu --</option>
                             <option th:each="i : ${ingredients}" th:value="${i.id}" 
-                                    th:text="${i.name + ' (Đang tồn: ' + i.quantity + ' ' + i.unit + ')'}">
+                                    th:text="${i.name + ' (Đang tồn: ' + (i.quantity % 1 == 0 ? #numbers.formatDecimal(i.quantity, 1, 0) : i.quantity) + ' ' + i.unit + ')'}">
                                 Hạt cà phê
                             </option>
                         </select>

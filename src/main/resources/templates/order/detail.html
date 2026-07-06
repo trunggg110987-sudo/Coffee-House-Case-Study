@@ -40,7 +40,7 @@
         <div class="card-body">
 
             <form action="/orders/add-item" method="post" class="row g-2">
-
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="hidden" name="orderId" th:value="${order.id}"/>
 
                 <div class="col-md-6">
@@ -96,19 +96,28 @@
                     <thead class="table-dark">
                     <tr>
                         <th>Món</th>
-                        <th class="text-center">Số lượng</th>
+                        <th class="text-center" style="width: 180px;">Số lượng</th>
                         <th class="text-end">Giá</th>
                         <th class="text-end">Thành tiền</th>
+                        <th class="text-center" style="width: 100px;">Thao tác</th>
                     </tr>
                     </thead>
 
                     <tbody>
 
-                    <tr th:each="d : ${order.orderDetails}">
+                    <tr th:each="d : ${order.orderDetails}" th:classappend="${d.quantity == 0} ? 'text-muted table-light opacity-75 text-decoration-line-through' : ''">
 
                         <td th:text="${d.product != null ? d.product.name : '---'}"></td>
 
-                        <td class="text-center" th:text="${d.quantity}"></td>
+                        <td class="text-center">
+                            <!-- Update Quantity Form -->
+                            <form th:action="@{/orders/update-item}" method="post" class="d-flex align-items-center justify-content-center">
+                                <input type="hidden" name="orderDetailId" th:value="${d.id}" />
+                                <button type="submit" name="quantity" th:value="${d.quantity - 1}" class="btn btn-sm btn-outline-secondary py-0 px-2" th:disabled="${d.quantity <= 0}">-</button>
+                                <input type="number" name="quantity" th:value="${d.quantity}" min="0" class="form-control form-control-sm text-center mx-1" style="width: 60px;" readonly />
+                                <button type="submit" name="quantity" th:value="${d.quantity + 1}" class="btn btn-sm btn-outline-secondary py-0 px-2">+</button>
+                            </form>
+                        </td>
 
                         <td class="text-end"
                             th:text="${d.priceAtOrder != null ? #numbers.formatDecimal(d.priceAtOrder,0,'COMMA',0,'POINT') + ' đ' : '0 đ'}">
@@ -116,6 +125,16 @@
 
                         <td class="text-end"
                             th:text="${d.priceAtOrder != null ? #numbers.formatDecimal(d.quantity * d.priceAtOrder,0,'COMMA',0,'POINT') + ' đ' : '0 đ'}">
+                        </td>
+
+                        <td class="text-center">
+                            <!-- Remove Item Form -->
+                            <form th:if="${d.quantity > 0}" th:action="@{/orders/remove-item/{id}(id=${d.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger py-1 px-2" onclick="return confirm('Bạn có chắc chắn muốn xoá món này?')">
+                                    <i class="bi bi-trash"></i> Xoá
+                                </button>
+                            </form>
+                            <span th:if="${d.quantity == 0}" class="badge bg-secondary">Đã huỷ</span>
                         </td>
 
                     </tr>

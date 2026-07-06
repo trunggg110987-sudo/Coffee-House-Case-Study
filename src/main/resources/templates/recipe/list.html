@@ -32,7 +32,7 @@
                             <div class="lh-sm">
                                 <span class="badge bg-light text-dark border me-1 mb-1" th:each="r : ${p.recipes}">
                                     <span th:text="${r.ingredient.name}">Cà phê</span>: 
-                                    <span class="fw-bold text-warning" th:text="${r.quantity + ' ' + r.ingredient.unit}">20g</span>
+                                    <span class="fw-bold text-warning" th:text="${(r.quantity % 1 == 0 ? #numbers.formatDecimal(r.quantity, 1, 0) : r.quantity) + ' ' + r.ingredient.unit}">20g</span>
                                 </span>
                                 <span class="text-muted fs-7 italic" th:if="${#lists.isEmpty(p.recipes)}">Chưa có công thức.</span>
                             </div>
