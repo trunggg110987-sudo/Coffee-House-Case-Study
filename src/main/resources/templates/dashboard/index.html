@@ -110,9 +110,9 @@
                     <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-3" th:each="i : ${lowStockIngredients}">
                         <div>
                             <h6 class="mb-0 fw-bold text-dark" th:text="${i.name}">Hạt cà phê</h6>
-                            <small class="text-muted" th:text="${'Ngưỡng tối thiểu: ' + i.minStockQuantity + ' ' + i.unit}">Ngưỡng: 1000g</small>
+                            <small class="text-muted" th:text="${'Ngưỡng tối thiểu: ' + (i.minStockQuantity % 1 == 0 ? #numbers.formatDecimal(i.minStockQuantity, 1, 0) : i.minStockQuantity) + ' ' + i.unit}">Ngưỡng: 1000g</small>
                         </div>
-                        <span class="badge bg-danger rounded-pill px-3 py-2" th:text="${'Còn: ' + i.quantity + ' ' + i.unit}">Còn: 500g</span>
+                        <span class="badge bg-danger rounded-pill px-3 py-2" th:text="${'Còn: ' + (i.quantity % 1 == 0 ? #numbers.formatDecimal(i.quantity, 1, 0) : i.quantity) + ' ' + i.unit}">Còn: 500g</span>
                     </div>
                 </div>
                 <div class="text-center text-muted py-5" th:if="${#lists.isEmpty(lowStockIngredients)}">

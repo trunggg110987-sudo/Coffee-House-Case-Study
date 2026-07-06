@@ -59,8 +59,8 @@
                         <td th:text="${i.unit}">g</td>
                         <td class="fw-bold" 
                             th:classappend="${i.quantity <= i.minStockQuantity ? 'text-danger' : 'text-success'}"
-                            th:text="${i.quantity}">5000</td>
-                        <td th:text="${i.minStockQuantity}">1000</td>
+                            th:text="${i.quantity % 1 == 0 ? #numbers.formatDecimal(i.quantity, 1, 0) : i.quantity}">5000</td>
+                        <td th:text="${i.minStockQuantity % 1 == 0 ? #numbers.formatDecimal(i.minStockQuantity, 1, 0) : i.minStockQuantity}">1000</td>
                         <td>
                             <span class="badge rounded-pill px-3 py-2"
                                   th:classappend="${i.quantity <= i.minStockQuantity ? 'bg-danger text-white' : 'bg-success text-white'}"

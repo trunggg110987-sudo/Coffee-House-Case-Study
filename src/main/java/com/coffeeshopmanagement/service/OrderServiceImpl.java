@@ -19,13 +19,20 @@ public class OrderServiceImpl implements OrderService {
     private final AccountRepository accountRepository;
     private final ProductRepository productRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final RecipeService recipeService;
+    private final IngredientService ingredientService;
 
-    public OrderServiceImpl(ProductRepository productRepository, OrderRepository orderRepository, DiningTableRepository diningTableRepository, AccountRepository accountRepository, OrderDetailRepository orderDetailRepository) {
+    public OrderServiceImpl(ProductRepository productRepository, OrderRepository orderRepository,
+                            DiningTableRepository diningTableRepository, AccountRepository accountRepository,
+                            OrderDetailRepository orderDetailRepository, RecipeService recipeService,
+                            IngredientService ingredientService) {
         this.diningTableRepository = diningTableRepository;
         this.productRepository = productRepository;
         this.accountRepository = accountRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
+        this.recipeService = recipeService;
+        this.ingredientService = ingredientService;
     }
 
     @Override
@@ -70,6 +77,24 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Quantity must be greater than 0");
         }
 
+        // --- CHECK INGREDIENTS SUFFICIENT ---
+        List<Recipe> recipes = recipeService.getRecipesByProductId(productId);
+        for (Recipe recipe : recipes) {
+            double requiredQuantity = recipe.getQuantity() * quantity;
+            double availableQuantity = recipe.getIngredient().getQuantity();
+
+            if (availableQuantity < requiredQuantity) {
+                throw new IllegalStateException("Nguyên liệu \"" + recipe.getIngredient().getName()
+                        + "\" không đủ để làm món \"" + product.getName() + "\"");
+            }
+        }
+
+        // --- DEDUCT INGREDIENTS ---
+        for (Recipe recipe : recipes) {
+            double quantityToDeduct = recipe.getQuantity() * quantity;
+            ingredientService.deductStock(recipe.getIngredient().getId(), quantityToDeduct);
+        }
+
         OrderDetail detail = orderDetailRepository.findByOrderIdAndProductId(orderId, productId);
         if (detail == null) {
             OrderDetail orderDetail = new OrderDetail();
@@ -92,8 +117,36 @@ public class OrderServiceImpl implements OrderService {
         OrderDetail detail = orderDetailRepository.findById(orderDetailId)
                 .orElseThrow(() ->  new EntityNotFoundException("OrderDetail not found"));
 
-        if(newQuantity <= 0){
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+        if(newQuantity < 0){
+            throw new IllegalArgumentException("Quantity must be 0 or greater");
+        }
+
+        int diff = newQuantity - detail.getQuantity();
+        if (diff != 0) {
+            List<Recipe> recipes = recipeService.getRecipesByProductId(detail.getProduct().getId());
+            if (diff > 0) {
+                // Check stock for the extra quantity
+                for (Recipe recipe : recipes) {
+                    double requiredQuantity = recipe.getQuantity() * diff;
+                    double availableQuantity = recipe.getIngredient().getQuantity();
+                    if (availableQuantity < requiredQuantity) {
+                        throw new IllegalStateException("Nguyên liệu \"" + recipe.getIngredient().getName()
+                                + "\" không đủ để bổ sung cho món \"" + detail.getProduct().getName() + "\"");
+                    }
+                }
+                // Deduct extra stock
+                for (Recipe recipe : recipes) {
+                    double quantityToDeduct = recipe.getQuantity() * diff;
+                    ingredientService.deductStock(recipe.getIngredient().getId(), quantityToDeduct);
+                }
+            } else {
+                // diff < 0, refund the difference
+                int quantityToRefund = -diff;
+                for (Recipe recipe : recipes) {
+                    double refundAmount = recipe.getQuantity() * quantityToRefund;
+                    ingredientService.restock(recipe.getIngredient().getId(), refundAmount);
+                }
+            }
         }
 
         detail.setQuantity(newQuantity);
@@ -112,7 +165,16 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = detail.getOrder();
         Long orderId = order.getId();
-        orderDetailRepository.delete(detail);
+
+        // Refund all ingredients
+        List<Recipe> recipes = recipeService.getRecipesByProductId(detail.getProduct().getId());
+        for (Recipe recipe : recipes) {
+            double refundAmount = recipe.getQuantity() * detail.getQuantity();
+            ingredientService.restock(recipe.getIngredient().getId(), refundAmount);
+        }
+
+        detail.setQuantity(0);
+        orderDetailRepository.save(detail);
         order.setTotalAmount(calculateOrderTotal(orderId));
         orderRepository.save(order);
         return orderId;
