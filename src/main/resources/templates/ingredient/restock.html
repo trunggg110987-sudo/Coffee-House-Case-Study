@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
+<head>
+    <title>Nhập kho nguyên liệu</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="mb-4">
+        <a href="/ingredients" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+        <h2 class="fw-bold text-dark">Nhập kho nguyên liệu</h2>
+        <p class="text-muted">Cập nhật bổ sung số lượng tồn kho cho các nguyên liệu hiện có.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-lg-6">
+            <div class="card p-4 shadow-sm border">
+                <form th:action="@{/ingredients/restock}" method="post">
+                    
+                    <div class="mb-3">
+                        <label for="ingredientId" class="form-label fw-semibold">Chọn nguyên liệu cần nhập kho</label>
+                        <select id="ingredientId" name="ingredientId" class="form-select rounded-pill px-3" required>
+                            <option value="" disabled selected>-- Chọn nguyên liệu --</option>
+                            <option th:each="i : ${ingredients}" th:value="${i.id}" 
+                                    th:text="${i.name + ' (Đang tồn: ' + i.quantity + ' ' + i.unit + ')'}">
+                                Hạt cà phê
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label fw-semibold">Số lượng nhập thêm</label>
+                        <input type="number" step="any" min="0.001" id="quantity" name="quantity" 
+                               class="form-control rounded-pill px-3" placeholder="VD: 500" required />
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-warning rounded-pill py-2 shadow-sm">
+                            <i class="bi bi-box-arrow-in-down me-1"></i> Xác nhận Nhập kho
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

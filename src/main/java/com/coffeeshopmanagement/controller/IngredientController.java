@@ -57,4 +57,20 @@ public class IngredientController {
         ingredientService.deleteIngredient(id);
         return "redirect:/ingredients";
     }
+
+    @GetMapping("/restock")
+    public String showRestockForm(Model model) {
+        model.addAttribute("ingredients", ingredientService.getAllIngredients());
+        model.addAttribute("activePage", "ingredients");
+        model.addAttribute("title", "Nhập kho nguyên liệu");
+        return "ingredient/restock";
+    }
+
+    @PostMapping("/restock")
+    public String processRestock(@RequestParam Long ingredientId, @RequestParam Double quantity) {
+        if (quantity != null && quantity > 0) {
+            ingredientService.restock(ingredientId, quantity);
+        }
+        return "redirect:/ingredients";
+    }
 }

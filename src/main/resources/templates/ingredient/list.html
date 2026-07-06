@@ -11,9 +11,14 @@
             <h2 class="fw-bold text-dark mb-1">Quản lý Nguyên liệu</h2>
             <p class="text-muted mb-0">Xem và cập nhật danh sách nguyên liệu pha chế, mức tồn kho và cảnh báo.</p>
         </div>
-        <a href="/ingredients/new" class="btn btn-warning rounded-pill px-4 shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i> Thêm Nguyên Liệu
-        </a>
+        <div class="d-flex gap-2">
+            <a href="/ingredients/restock" class="btn btn-outline-warning rounded-pill px-4 shadow-sm">
+                <i class="bi bi-box-arrow-in-down me-1"></i> Nhập Kho
+            </a>
+            <a href="/ingredients/new" class="btn btn-warning rounded-pill px-4 shadow-sm">
+                <i class="bi bi-plus-lg me-1"></i> Thêm Nguyên Liệu
+            </a>
+        </div>
     </div>
 
     <!-- Alert for Low Stock Items -->
@@ -53,13 +58,13 @@
                         </td>
                         <td th:text="${i.unit}">g</td>
                         <td class="fw-bold" 
-                            th:classappend="${i.stockQuantity <= i.minStockQuantity ? 'text-danger' : 'text-success'}"
-                            th:text="${i.stockQuantity}">5000</td>
+                            th:classappend="${i.quantity <= i.minStockQuantity ? 'text-danger' : 'text-success'}"
+                            th:text="${i.quantity}">5000</td>
                         <td th:text="${i.minStockQuantity}">1000</td>
                         <td>
                             <span class="badge rounded-pill px-3 py-2"
-                                  th:classappend="${i.stockQuantity <= i.minStockQuantity ? 'bg-danger text-white' : 'bg-success text-white'}"
-                                  th:text="${i.stockQuantity <= i.minStockQuantity ? 'Sắp hết' : 'An toàn'}">
+                                  th:classappend="${i.quantity <= i.minStockQuantity ? 'bg-danger text-white' : 'bg-success text-white'}"
+                                  th:text="${i.quantity <= i.minStockQuantity ? 'Sắp hết' : 'An toàn'}">
                                 An toàn
                             </span>
                         </td>

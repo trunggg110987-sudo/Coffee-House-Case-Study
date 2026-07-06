@@ -38,10 +38,10 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="stockQuantity" class="form-label fw-semibold">Số lượng tồn kho ban đầu</label>
-                            <input type="number" step="any" id="stockQuantity" th:field="*{stockQuantity}" class="form-control rounded-pill px-3" 
+                            <label for="quantity" class="form-label fw-semibold">Số lượng tồn kho ban đầu</label>
+                            <input type="number" step="any" id="quantity" th:field="*{quantity}" class="form-control rounded-pill px-3" 
                                    placeholder="VD: 500.0" th:errorclass="is-invalid" />
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">
                                 Số lượng tồn kho phải là số lớn hơn hoặc bằng 0
                             </div>
                         </div>

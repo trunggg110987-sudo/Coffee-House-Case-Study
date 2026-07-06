@@ -9,5 +9,6 @@ public interface IngredientService {
     void saveIngredient(Ingredient ingredient);
     void deleteIngredient(Long id);
     List<Ingredient> getLowStockIngredients();
+    void restock(Long id, Double quantity);
     void deductStock(Long ingredientId, Double quantityToDeduct);
 }

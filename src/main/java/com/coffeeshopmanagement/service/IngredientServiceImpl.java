@@ -56,4 +56,12 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setQuantity(ingredient.getQuantity() - quantityToDeduct);
         ingredientRepository.save(ingredient);
     }
+
+    @Override
+    @Transactional
+    public void restock(Long id, Double quantity) {
+        Ingredient ingredient = getIngredientById(id);
+        ingredient.setQuantity(ingredient.getQuantity() + quantity);
+        ingredientRepository.save(ingredient);
+    }
 }

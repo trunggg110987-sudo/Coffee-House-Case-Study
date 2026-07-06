@@ -1,10 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::content})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Dashboard Doanh thu</title>
 </head>
 <body>
+<div th:fragment="content">
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark mb-1">Dashboard Doanh Thu</h2>
+        <p class="text-muted mb-0">Thống kê doanh thu bán hàng, trạng thái phục vụ và cảnh báo tồn kho.</p>
+    </div>
 
+    <!-- Stats Cards Row -->
+    <div class="row g-4 mb-4">
+        <!-- Revenue Card -->
+        <div class="col-md-3">
+            <div class="card bg-primary text-white p-3 h-100 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-white-50 small text-uppercase fw-bold">Tổng doanh thu</span>
+                        <h3 class="card-title fw-bold mt-1 mb-0" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'POINT', 0, 'COMMA') + 'đ'}">0đ</h3>
+                    </div>
+                    <div class="bg-white-50 rounded p-3 text-white">
+                        <i class="bi bi-wallet2 fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today Revenue Card -->
+        <div class="col-md-3">
+            <div class="card bg-success text-white p-3 h-100 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-white-50 small text-uppercase fw-bold">Doanh thu hôm nay</span>
+                        <h3 class="card-title fw-bold mt-1 mb-0" th:text="${#numbers.formatDecimal(todayRevenue, 0, 'POINT', 0, 'COMMA') + 'đ'}">0đ</h3>
+                    </div>
+                    <div class="bg-white-50 rounded p-3 text-white">
+                        <i class="bi bi-cash-coin fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Occupied Tables Card -->
+        <div class="col-md-3">
+            <div class="card bg-info text-white p-3 h-100 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-white-50 small text-uppercase fw-bold">Bàn đang phục vụ</span>
+                        <h3 class="card-title fw-bold mt-1 mb-0" th:text="${occupiedTablesCount + ' bàn'}">0 bàn</h3>
+                    </div>
+                    <div class="bg-white-50 rounded p-3 text-white">
+                        <i class="bi bi-people-fill fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert Card -->
+        <div class="col-md-3">
+            <div class="card p-3 h-100 shadow-sm border-0" th:classappend="${lowStockCount > 0 ? 'bg-danger text-white' : 'bg-secondary text-white'}">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-white-50 small text-uppercase fw-bold">Nguyên liệu sắp hết</span>
+                        <h3 class="card-title fw-bold mt-1 mb-0" th:text="${lowStockCount + ' mặt hàng'}">0 mặt hàng</h3>
+                    </div>
+                    <div class="bg-white-50 rounded p-3 text-white">
+                        <i class="bi bi-exclamation-octagon fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- 7-day revenue chart / table -->
+        <div class="col-lg-7">
+            <div class="card p-4 shadow-sm border h-100">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">
+                    <i class="bi bi-graph-up text-warning me-1"></i> Báo cáo doanh thu 7 ngày qua
+                </h5>
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ngày</th>
+                                <th class="text-end">Doanh thu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entry : ${dailyRevenue}">
+                                <td class="fw-semibold text-dark" th:text="${entry.key}">01/01</td>
+                                <td class="text-end fw-bold text-success" th:text="${#numbers.formatDecimal(entry.value, 0, 'POINT', 0, 'COMMA') + 'đ'}">0đ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock ingredients list -->
+        <div class="col-lg-5">
+            <div class="card p-4 shadow-sm border h-100">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">
+                    <i class="bi bi-bell-fill text-warning me-1"></i> Cảnh báo tồn kho thấp
+                </h5>
+                <div class="list-group list-group-flush mt-3" th:if="${not #lists.isEmpty(lowStockIngredients)}">
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-3" th:each="i : ${lowStockIngredients}">
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark" th:text="${i.name}">Hạt cà phê</h6>
+                            <small class="text-muted" th:text="${'Ngưỡng tối thiểu: ' + i.minStockQuantity + ' ' + i.unit}">Ngưỡng: 1000g</small>
+                        </div>
+                        <span class="badge bg-danger rounded-pill px-3 py-2" th:text="${'Còn: ' + i.quantity + ' ' + i.unit}">Còn: 500g</span>
+                    </div>
+                </div>
+                <div class="text-center text-muted py-5" th:if="${#lists.isEmpty(lowStockIngredients)}">
+                    <i class="bi bi-check-circle-fill text-success fs-1 d-block mb-3"></i>
+                    Tất cả các nguyên liệu đều ở mức an toàn.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
