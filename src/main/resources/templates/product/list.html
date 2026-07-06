@@ -47,10 +47,9 @@
             <!-- IMAGE -->
             <td>
                 <img th:if="${p.image != null}"
-                     th:src="@{'/uploads/products/' + ${p.image}}"
-                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-
-                <span th:if="${p.image == null}">Không có ảnh </span>
+                th:src="@{'/uploads/products/' + ${p.image}}"
+                style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+                  <span th:if="${p.image == null}">Không có ảnh </span>
             </td>
 
             <!-- NAME -->
