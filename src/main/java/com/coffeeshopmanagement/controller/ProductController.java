@@ -44,14 +44,14 @@ public class ProductController {
         try {
             if (file != null && !file.isEmpty()) {
 
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-
-                String uploadPath = "src/main/resources/static/uploads/products/";
+                String uploadPath = System.getProperty("user.dir") + "/uploads/products/";
 
                 File dir = new File(uploadPath);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
+
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
                 file.transferTo(new File(uploadPath + fileName));
 
@@ -62,9 +62,12 @@ public class ProductController {
 
             redirectAttributes.addFlashAttribute("successMessage", "Lưu sản phẩm thành công!");
 
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("errorMessage", "Upload ảnh lỗi!");
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Upload ảnh lỗi: " + e.getMessage()
+            );
         }
 
         return "redirect:/products";
